@@ -10,9 +10,10 @@ import 'package:project_assignment/screens/invoicepage.dart';
 import 'package:intl/intl.dart';
 
 class InvoiceController extends GetxController {
-  var invoiceNumber = 'INV-2024-001'.obs;
-  var customerName = 'ANOSH SOFTWARE'.obs;
-  var customerAddress = '123 Business Street, City, State 12345'.obs;
+  var invoiceNumber = ''.obs;
+  var customerName = ''.obs;
+  var customerAddress = ''.obs;
+
   var itemDetails = 'ITEM DETAILS'.obs;
   var termsCondition = 'Terms & Conditions:'.obs;
   var paymentTerms =
@@ -22,6 +23,8 @@ class InvoiceController extends GetxController {
   var emailID = 'ksaquib982@gmail.com'.obs;
   var website = 'www.saquibkhan.com'.obs;
 
+  var items2 = <InvoiceItem>[].obs;
+
   var items = <InvoiceItem>[
     InvoiceItem(description: 'Widget Type A', quantity: 5, unitPrice: 300.0),
     InvoiceItem(
@@ -29,7 +32,16 @@ class InvoiceController extends GetxController {
     InvoiceItem(description: 'Consultation', quantity: 3, unitPrice: 450.0),
   ].obs;
 
+  void setInvoiceName(String name) => invoiceNumber.value = name;
+  void setCompanyName(String name) => customerName.value = name;
+  void setCompanyLocation(String location) => customerAddress.value = location;
+  void addItem(InvoiceItem item) => items2.add(item);
+
   double get totalAmount => items.fold(0.0, (sum, item) => sum + item.total);
+  double getTotalCost() {
+    return items2.fold(
+        0.0, (sum, item) => sum + (item.quantity * item.unitPrice));
+  }
 
   Future<Uint8List> generatePdf() async {
     final pdf = pw.Document();
@@ -160,7 +172,6 @@ class InvoiceController extends GetxController {
         },
       ),
     );
-
     return pdf.save();
   }
 
@@ -186,9 +197,6 @@ class InvoiceItem {
 final List<InvoiceTemplate> templates = [
   InvoiceTemplate(name: 'Template 1', previewAsset: 'assets/template1.png'),
   InvoiceTemplate(name: 'Template 2', previewAsset: 'assets/template2.png'),
-  InvoiceTemplate(name: 'Template 3', previewAsset: 'assets/template3.png'),
-  InvoiceTemplate(name: 'Template 4', previewAsset: 'assets/template4.png'),
-  InvoiceTemplate(name: 'Template 5', previewAsset: 'assets/template5.png'),
 ];
 
 class InvoiceTemplate {

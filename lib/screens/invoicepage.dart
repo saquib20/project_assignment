@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
@@ -8,6 +7,7 @@ import 'package:printing/printing.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:project_assignment/controller/invoice_controller.dart';
 import 'package:intl/intl.dart';
+import 'package:project_assignment/screens/template_two.dart';
 
 class InvoicePage extends StatefulWidget {
   const InvoicePage({super.key});
@@ -28,119 +28,96 @@ class _InvoicePageState extends State<InvoicePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: const Center(child: Text('Invoice Application'))),
-        body: Stack(
-          children: [
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final isLargeScreen = constraints.maxWidth > 800;
+        body: selectedTemplate == 'Template 1'
+            ? Stack(
+                children: [
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final isLargeScreen = constraints.maxWidth > 800;
 
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: isLargeScreen ? 300 : constraints.maxWidth * 0.4,
-                      color: Colors.grey[100],
-                      child: Column(
+                      return Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Center(
-                              child: Text(
-                                "Print Setting",
-                                style:
-                                    Theme.of(context).textTheme.headlineSmall,
-                              ),
-                            ),
-                          ),
-                          const Divider(),
-                          Expanded(
-                            child: SingleChildScrollView(
-                              primary: true,
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Printable Template',
+                          Container(
+                            width: isLargeScreen
+                                ? 300
+                                : constraints.maxWidth * 0.4,
+                            color: Colors.grey[100],
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Center(
+                                    child: Text(
+                                      "Print Setting",
                                       style: Theme.of(context)
                                           .textTheme
-                                          .titleMedium,
+                                          .headlineSmall,
                                     ),
-                                    const SizedBox(height: 8),
-                                    Container(
-                                      height: 200,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: Colors.grey[300]!),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: ListView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: templates.length,
-                                        itemBuilder: (context, index) {
-                                          return Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: TemplatePreviewCard(
-                                              template: templates[index],
-                                              isSelected: selectedTemplate ==
-                                                  templates[index].name,
-                                              onSelect: () {
-                                                setState(() {
-                                                  selectedTemplate =
-                                                      templates[index].name;
-                                                });
+                                  ),
+                                ),
+                                const Divider(),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    primary: true,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Printable Template',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium,
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Container(
+                                            height: 200,
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.grey[300]!),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: templates.length,
+                                              itemBuilder: (context, index) {
+                                                return Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: TemplatePreviewCard(
+                                                    template: templates[index],
+                                                    isSelected:
+                                                        selectedTemplate ==
+                                                            templates[index]
+                                                                .name,
+                                                    onSelect: () {
+                                                      setState(() {
+                                                        selectedTemplate =
+                                                            templates[index]
+                                                                .name;
+                                                      });
+                                                      print(selectedTemplate);
+                                                    },
+                                                  ),
+                                                );
                                               },
                                             ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    const SizedBox(height: 24),
-                                    Text(
-                                      'Print Size',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium,
-                                    ),
-                                    const SizedBox(height: 8),
-                                    DropdownButtonFormField<String>(
-                                      value: printSize,
-                                      decoration: InputDecoration(
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                horizontal: 16, vertical: 8),
-                                      ),
-                                      items: ['A4', 'Letter', 'Legal']
-                                          .map((String value) {
-                                        return DropdownMenuItem<String>(
-                                          value: value,
-                                          child: Text(value),
-                                        );
-                                      }).toList(),
-                                      onChanged: (String? newValue) {
-                                        setState(() {
-                                          printSize = newValue!;
-                                        });
-                                      },
-                                    ),
-                                    const SizedBox(height: 16),
-                                    Text(
-                                      'Print Copies',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium,
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Column(
-                                      children: [
-                                        DropdownButtonFormField<int>(
-                                            value: selectedCopies,
+                                          ),
+                                          const SizedBox(height: 24),
+                                          Text(
+                                            'Print Size',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium,
+                                          ),
+                                          const SizedBox(height: 8),
+                                          DropdownButtonFormField<String>(
+                                            value: printSize,
                                             decoration: InputDecoration(
                                               border: OutlineInputBorder(
                                                 borderRadius:
@@ -150,128 +127,173 @@ class _InvoicePageState extends State<InvoicePage> {
                                                   const EdgeInsets.symmetric(
                                                       horizontal: 16,
                                                       vertical: 8),
-                                              labelText: 'Select Copies',
                                             ),
-                                            items: copyOptions.map((int value) {
-                                              return DropdownMenuItem<int>(
+                                            items: ['A4', 'Letter', 'Legal']
+                                                .map((String value) {
+                                              return DropdownMenuItem<String>(
                                                 value: value,
-                                                child: Text('$value copies'),
+                                                child: Text(value),
                                               );
                                             }).toList(),
-                                            onChanged: (int? newValue) {
-                                              if (newValue != null) {
-                                                setState(() {
-                                                  selectedCopies = newValue;
-                                                });
-                                              }
-                                            }),
-                                        const SizedBox(height: 20),
-                                        Text(
-                                          'Selected Copies: $selectedCopies',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headlineSmall,
-                                        ),
-                                        const SizedBox(height: 20),
-                                      ],
+                                            onChanged: (String? newValue) {
+                                              setState(() {
+                                                printSize = newValue!;
+                                              });
+                                            },
+                                          ),
+                                          const SizedBox(height: 16),
+                                          Text(
+                                            'Print Copies',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium,
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Column(
+                                            children: [
+                                              DropdownButtonFormField<int>(
+                                                  value: selectedCopies,
+                                                  decoration: InputDecoration(
+                                                    border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8),
+                                                    ),
+                                                    contentPadding:
+                                                        const EdgeInsets
+                                                            .symmetric(
+                                                            horizontal: 16,
+                                                            vertical: 8),
+                                                    labelText: 'Select Copies',
+                                                  ),
+                                                  items: copyOptions
+                                                      .map((int value) {
+                                                    return DropdownMenuItem<
+                                                        int>(
+                                                      value: value,
+                                                      child:
+                                                          Text('$value copies'),
+                                                    );
+                                                  }).toList(),
+                                                  onChanged: (int? newValue) {
+                                                    if (newValue != null) {
+                                                      setState(() {
+                                                        selectedCopies =
+                                                            newValue;
+                                                      });
+                                                    }
+                                                  }),
+                                              const SizedBox(height: 20),
+                                              Text(
+                                                'Selected Copies: $selectedCopies',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headlineSmall,
+                                              ),
+                                              const SizedBox(height: 20),
+                                            ],
+                                          ),
+                                          Text(
+                                            'Additional Options',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium,
+                                          ),
+                                          const SizedBox(height: 8),
+                                          CheckboxListTile(
+                                            title: const Text('Show Values'),
+                                            value: showValues,
+                                            onChanged: (bool? value) {
+                                              setState(() {
+                                                showValues = value!;
+                                              });
+                                            },
+                                            contentPadding: EdgeInsets.zero,
+                                          ),
+                                          CheckboxListTile(
+                                            title:
+                                                const Text('Digital Signature'),
+                                            value: showDigitalSignature,
+                                            onChanged: (bool? value) {
+                                              setState(() {
+                                                showDigitalSignature = value!;
+                                              });
+                                            },
+                                            contentPadding: EdgeInsets.zero,
+                                          ),
+                                          CheckboxListTile(
+                                            title: const Text('Email Address'),
+                                            value: showValues,
+                                            onChanged: (bool? value) {
+                                              setState(() {
+                                                showValues = value!;
+                                              });
+                                            },
+                                            contentPadding: EdgeInsets.zero,
+                                          ),
+                                          CheckboxListTile(
+                                            title: const Text('Website'),
+                                            value: showValues,
+                                            onChanged: (bool? value) {
+                                              setState(() {
+                                                showValues = value!;
+                                              });
+                                            },
+                                            contentPadding: EdgeInsets.zero,
+                                          ),
+                                          const SizedBox(height: 24),
+                                          const SizedBox(height: 16),
+                                          ElevatedButton.icon(
+                                            onPressed: controller.printPdf,
+                                            icon: const Icon(Icons.print),
+                                            label: const Text('Print Invoice'),
+                                            style: ElevatedButton.styleFrom(
+                                                minimumSize:
+                                                    const Size.fromHeight(50)),
+                                          ),
+                                          const SizedBox(height: 16),
+                                        ],
+                                      ),
                                     ),
-                                    Text(
-                                      'Additional Options',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium,
-                                    ),
-                                    const SizedBox(height: 8),
-                                    CheckboxListTile(
-                                      title: const Text('Show Values'),
-                                      value: showValues,
-                                      onChanged: (bool? value) {
-                                        setState(() {
-                                          showValues = value!;
-                                        });
-                                      },
-                                      contentPadding: EdgeInsets.zero,
-                                    ),
-                                    CheckboxListTile(
-                                      title: const Text('Digital Signature'),
-                                      value: showDigitalSignature,
-                                      onChanged: (bool? value) {
-                                        setState(() {
-                                          showDigitalSignature = value!;
-                                        });
-                                      },
-                                      contentPadding: EdgeInsets.zero,
-                                    ),
-                                    CheckboxListTile(
-                                      title: const Text('Email Address'),
-                                      value: showValues,
-                                      onChanged: (bool? value) {
-                                        setState(() {
-                                          showValues = value!;
-                                        });
-                                      },
-                                      contentPadding: EdgeInsets.zero,
-                                    ),
-                                    CheckboxListTile(
-                                      title: const Text('Website'),
-                                      value: showValues,
-                                      onChanged: (bool? value) {
-                                        setState(() {
-                                          showValues = value!;
-                                        });
-                                      },
-                                      contentPadding: EdgeInsets.zero,
-                                    ),
-                                    const SizedBox(height: 24),
-                                    const SizedBox(height: 16),
-                                    ElevatedButton.icon(
-                                      onPressed: controller.printPdf,
-                                      icon: const Icon(Icons.print),
-                                      label: const Text('Print Invoice'),
-                                      style: ElevatedButton.styleFrom(
-                                          minimumSize:
-                                              const Size.fromHeight(50)),
-                                    ),
-                                    const SizedBox(height: 16),
-                                  ],
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
                           ),
+                          const SizedBox(width: 20),
+                          Expanded(
+                            child: isLargeScreen
+                                ? Container(
+                                    color: Colors.white,
+                                    child: PdfPreview(
+                                      canChangePageFormat: false,
+                                      canChangeOrientation: false,
+                                      build: (format) => _generatePdf(),
+                                      initialPageFormat: PdfPageFormat.a4,
+                                      pdfFileName: "invoice.pdf",
+                                      allowPrinting: false,
+                                      allowSharing: false,
+                                    ),
+                                  )
+                                : Container(
+                                    color: Colors.grey[200],
+                                    child: Center(
+                                      child: Text(
+                                        "Expand the window for the preview",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge,
+                                      ),
+                                    ),
+                                  ),
+                          ),
                         ],
-                      ),
-                    ),
-                    const SizedBox(width: 20),
-                    Expanded(
-                      child: isLargeScreen
-                          ? Container(
-                              color: Colors.white,
-                              child: PdfPreview(
-                                canChangePageFormat: false,
-                                canChangeOrientation: false,
-                                build: (format) => _generatePdf(),
-                                initialPageFormat: PdfPageFormat.a4,
-                                pdfFileName: "invoice.pdf",
-                                allowPrinting: false,
-                                allowSharing: false,
-                              ),
-                            )
-                          : Container(
-                              color: Colors.grey[200],
-                              child: Center(
-                                child: Text(
-                                  "Expand the window for the preview",
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                ),
-                              ),
-                            ),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ],
-        ));
+                      );
+                    },
+                  ),
+                ],
+              )
+            : InvoicePage());
   }
 }
 
