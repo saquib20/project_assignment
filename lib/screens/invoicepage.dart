@@ -293,7 +293,7 @@ class _InvoicePageState extends State<InvoicePage> {
                   ),
                 ],
               )
-            : InvoicePage());
+            : InvoiceHomePage());
   }
 }
 

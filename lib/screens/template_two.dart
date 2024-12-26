@@ -22,38 +22,36 @@ class InvoiceHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Row(
-            children: [
-              Sidebar(controller: controller),
-              Expanded(
-                child: InvoiceCanvas(),
-              ),
-            ],
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Center(
-                  child: ElevatedButton.icon(
-                    label: const Text('Print Invoice'),
-                    style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    )),
-                    onPressed: () => generatePDF(controller),
-                    icon: const Icon(Icons.print),
-                  ),
+    return Stack(
+      children: [
+        Row(
+          children: [
+            Sidebar(controller: controller),
+            Expanded(
+              child: InvoiceCanvas(),
+            ),
+          ],
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Center(
+                child: ElevatedButton.icon(
+                  label: const Text('Print Invoice'),
+                  style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  )),
+                  onPressed: () => generatePDF(controller),
+                  icon: const Icon(Icons.print),
                 ),
-              )
-            ],
-          )
-        ],
-      ),
+              ),
+            )
+          ],
+        )
+      ],
     );
   }
 
